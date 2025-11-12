@@ -135,11 +135,9 @@ function New-JiraIssue {
         }
     } | ConvertTo-Json -Depth 10
 
-    # $response = Invoke-RestMethod -Uri "$JiraUrl/rest/api/3/issue" -Headers $headers -Method Post -Body $body
-    # return $response.key
-    return $body
+    $response = Invoke-RestMethod -Uri "$JiraUrl/rest/api/3/issue" -Headers $headers -Method Post -Body $body
+    return $response.key
 }
 
 $newIssue = New-JiraIssue -JiraUrl $JiraUrl -ProjectKey $ProjectKey -Summary "Test issue from Actions with current Sprint and Release" -Description "Created using Actions via REST API and assigned to current Sprint and latest Release" -IssueType "External Request" -JiraUser $JiraUser -JiraPat $JiraPat
-
-Write-Output "::set-output name=jira_issue_id::$($newIssue)"
+echo "jira_issue_id=$($newIssue)" >> $env:GITHUB_OUTPUT

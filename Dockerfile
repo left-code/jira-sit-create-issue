@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/powershell
 WORKDIR /usr/src
 
 # Copy any source file(s) required for the action
-COPY entrypoint.ps1 .
+COPY start.ps1 .
 
 # Configure the container to be run as an executable
-ENTRYPOINT ["pwsh", "/usr/src/entrypoint.ps1"]
+ENTRYPOINT ["pwsh", "/usr/src/start.ps1"]

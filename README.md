@@ -1,211 +1,99 @@
-# Create a Container Action
+# Create Jira-SIT Issue
 
-![Continuous Integration](https://github.com/actions/jira-sit-create-issue/actions/workflows/ci.yml/badge.svg)
-![Linter](https://github.com/actions/jira-sit-create-issue/actions/workflows/linter.yml/badge.svg)
+This GitHub Action creates a Jira issue and optionally assigns it to the current sprint and release. It uses the Jira REST API to interact with your Jira instance and supports various configuration options for issue creation.
 
-Use this template to bootstrap the creation of a container action. :rocket:
+## Inputs
 
-This template includes compilation support, tests, a validation workflow,
-publishing, and versioning guidance.
+### `jira_url`
 
-## Create Your Own Action
+**Required** The URL of your Jira instance (e.g., `https://your-company.atlassian.net`).
 
-To create your own action, you can use this repository as a template! Just
-follow the below instructions:
+### `jira_pat`
 
-1. Click the **Use this template** button at the top of the repository
-1. Select **Create a new repository**
-1. Select an owner and name for your new repository
-1. Click **Create repository**
-1. Clone your new repository
+**Required** Personal Access Token for Jira authentication. Store this as a secret in your repository.
 
-> [!IMPORTANT]
->
-> Make sure to remove or update the [`CODEOWNERS`](./CODEOWNERS) file! For
-> details on how to use this file, see
-> [About code owners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
+### `jira_user`
 
-## Initial Setup
+**Required** Jira username for authentication.
 
-After you've cloned the repository to your local machine or codespace, you'll
-need to perform some initial setup steps before you can develop your action.
+### `jira_project_key`
 
-> [!NOTE]
->
-> You'll need to have a reasonably modern version of
-> [Docker](https://www.docker.com/get-started/) handy (e.g. docker engine
-> version 20 or later).
+**Required** The project key in Jira where the issue will be created (e.g., `PROJ`).
 
-1. :hammer_and_wrench: Build the container
+### `jira_project_board_name`
 
-   ```bash
-   docker build -t actions/jira-sit-create-issue .
-   ```
+**Required** The name of the Jira board associated with your project.
 
-1. :white_check_mark: Test the container
+### `jira_issue_type`
 
-   You can pass individual environment variables using the `--env` or `-e` flag.
+**Required** The type of issue to create (e.g., `Task`, `Bug`, `Story`, `External Request`).
 
-   ```bash
-   $ docker run --env INPUT_WHO_TO_GREET="Mona Lisa Octocat" actions/jira-sit-create-issue
-   ::notice file=entrypoint.sh,line=7::Hello, Mona Lisa Octocat!
-   ```
+### `jira_assign_to_current_sprint`
 
-   Or you can pass a file with environment variables using `--env-file`.
+**Optional** Whether to assign the issue to the current active sprint. Default: `false`.
 
-   ```bash
-   $ cat ./.env.test
-   INPUT_WHO_TO_GREET="Mona Lisa Octocat"
+### `jira_assign_to_current_release`
 
-   $ docker run --env-file ./.env.test actions/jira-sit-create-issue
-   ::notice file=entrypoint.sh,line=7::Hello, Mona Lisa Octocat!
-   ```
+**Optional** Whether to assign the issue to the current unreleased version. Default: `false`.
 
-## Update the Action Metadata
+## Outputs
 
-The [`action.yml`](action.yml) file defines metadata about your action, such as
-input(s) and output(s). For details about this file, see
-[Metadata syntax for GitHub Actions](https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions).
+### `jira_issue_id`
 
-When you copy this repository, update `action.yml` with the name, description,
-inputs, and outputs for your action.
+The ID/key of the created Jira issue (e.g., `PROJ-123`).
 
-## Update the Action Code
+## Features
 
-In this template, the container action runs a shell script,
-[`entrypoint.sh`](./entrypoint.sh), when the container is launched. Since you
-can choose any base Docker image and language you like, you can change this to
-suite your needs. There are a few main things to remember when writing code for
-container actions:
+- Creates Jira issues using REST API v3
+- Supports Basic authentication with username and PAT
+- Automatically assigns issues to current active sprint (optional)
+- Automatically assigns issues to current unreleased version (optional)
+- Uses Atlassian Document Format (ADF) for issue descriptions
+- Provides the created issue ID as output for further workflow steps
 
-- Inputs are accessed using argument identifiers or environment variables
-  (depending on what you set in your `action.yml`). For example, the first input
-  to this action, `who-to-greet`, can be accessed in the entrypoint script using
-  the `$INPUT_WHO_TO_GREET` environment variable.
-
-  ```bash
-  GREETING="Hello, $INPUT_WHO_TO_GREET!"
-  ```
-
-- GitHub Actions supports a number of different workflow commands such as
-  creating outputs, setting environment variables, and more. These are
-  accomplished by writing to different `GITHUB_*` environment variables. For
-  more information, see
-  [Workflow commands](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions).
-
-  | Scenario              | Example                                         |
-  | --------------------- | ----------------------------------------------- |
-  | Set environment vars  | `echo "MY_VAR=my-value" >> "$GITHUB_ENV"`       |
-  | Set outputs           | `echo "greeting=$GREETING" >> "$GITHUB_OUTPUT"` |
-  | Prepend to `PATH`     | `echo "$HOME/.local/bin" >> "$GITHUB_PATH"`     |
-  | Set `pre`/`post` vars | `echo "MY_VAR=my-value" >> "$GITHUB_STATE"`     |
-  | Set step summary      | `echo "{markdown}" >> "$GITHUB_STEP_SUMMARY"`   |
-
-  You can write multiline strings using the following syntax:
-
-  ```bash
-  {
-    echo "JSON_RESPONSE<<EOF"
-    curl https://example.com
-    echo "EOF"
-  } >> "$GITHUB_ENV"
-  ```
-
-- Make sure that the script being run is executable!
-
-  ```bash
-  git add entrypoint.sh
-  git update-index --chmod=+x entrypoint.sh
-  ```
-
-So, what are you waiting for? Go ahead and start customizing your action!
-
-1. Create a new branch
-
-   ```bash
-   git checkout -b releases/v1
-   ```
-
-1. Replace the contents of `entrypoint.sh` with your action code
-1. Build and test the container
-
-   ```bash
-   docker build -t actions/jira-sit-create-issue .
-   docker run actions/jira-sit-create-issue "Mona Lisa Octocat"
-   ```
-
-1. Commit your changes
-
-   ```bash
-   git add .
-   git commit -m "My first action is ready!"
-   ```
-
-1. Push them to your repository
-
-   ```bash
-   git push -u origin releases/v1
-   ```
-
-1. Create a pull request and get feedback on your action
-1. Merge the pull request into the `main` branch
-
-Your action is now published! :rocket:
-
-For information about versioning your action, see
-[Versioning](https://github.com/actions/toolkit/blob/main/docs/action-versioning.md)
-in the GitHub Actions toolkit.
-
-## Validate the Action
-
-You can now validate the action by referencing it in a workflow file. For
-example, [`ci.yml`](./.github/workflows/ci.yml) demonstrates how to reference an
-action in the same repository.
+## Example usage
 
 ```yaml
-steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v4
+- name: Create Jira Issue
+  uses: left-code/jira-sit-create-issue@v1
+  with:
+    jira_url: ${{ secrets.JIRA_URL }}
+    jira_pat: ${{ secrets.JIRA_PAT }}
+    jira_user: ${{ secrets.JIRA_USER }}
+    jira_project_key: 'PROJ'
+    jira_project_board_name: 'Project Board'
+    jira_issue_type: 'Task'
+    jira_assign_to_current_sprint: 'true'
+    jira_assign_to_current_release: 'true'
+  id: create-issue
 
-  - name: Test Local Action
-    id: test-action
-    uses: ./
-    with:
-      who-to-greet: Mona Lisa Octocat
-
-  - name: Print Output
-    id: output
-    run: echo "${{ steps.test-action.outputs.greeting }}"
+- name: Use created issue ID
+  run: echo "Created issue ${{ steps.create-issue.outputs.jira_issue_id }}"
 ```
 
-For example workflow runs, check out the
-[Actions tab](https://github.com/actions/jira-sit-create-issue/actions)! :rocket:
+## Environment Variables
 
-## Usage
-
-After testing, you can create version tag(s) that developers can use to
-reference different stable versions of your action. For more information, see
-[Versioning](https://github.com/actions/toolkit/blob/main/docs/action-versioning.md)
-in the GitHub Actions toolkit.
-
-To include the action in a workflow in another repository, you can use the
-`uses` syntax with the `@` symbol to reference a specific branch, tag, or commit
-hash.
+Alternatively, you can use environment variables instead of inputs:
 
 ```yaml
-steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v4
-
-  - name: Test Local Action
-    id: test-action
-    uses: actions/jira-sit-create-issue@v1 # Commit with the `v1` tag
-    with:
-      who-to-greet: Mona Lisa Octocat
-
-  - name: Print Output
-    id: output
-    run: echo "${{ steps.test-action.outputs.greeting }}"
+- name: Create Jira Issue
+  uses: left-code/jira-sit-create-issue@v1
+  env:
+    JIRA_URL: ${{ secrets.JIRA_URL }}
+    JIRA_PAT: ${{ secrets.JIRA_PAT }}
+    JIRA_USER: ${{ secrets.JIRA_USER }}
+    JIRA_PROJECT_KEY: 'PROJ'
+    JIRA_PROJECT_BOARD_NAME: 'Project Board'
+    JIRA_ISSUE_TYPE: 'Task'
+    JIRA_ASSIGN_TO_CURRENT_SPRINT: 'true'
+    JIRA_ASSIGN_TO_CURRENT_RELEASE: 'true'
 ```
+
+## Setup
+
+1. Create a Jira Personal Access Token in your Jira account
+2. Add the following secrets to your GitHub repository:
+   - `JIRA_URL`: Your Jira instance URL
+   - `JIRA_PAT`: Your Jira Personal Access Token
+   - `JIRA_USER`: Your Jira username
+3. Configure the action inputs or environment variables as needed

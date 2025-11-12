@@ -1,5 +1,5 @@
-name: Create Jira SIT Issue
-description: A GitHub Action to create a Jira SIT issue.
+name: Create Jira-SIT Issue
+description: A GitHub Action to create a Jira issue and optionally assign it to the current sprint and release.
 author: left-code
 
 branding:
@@ -8,8 +8,36 @@ branding:
 
 outputs:
   jira_issue_id:
-    description: The ID of the created Jira issue.
+    description: The Id of the created Jira issue.
 
 runs:
   using: docker
   image: Dockerfile
+
+inputs:
+  jira_url:
+    description: The URL of your Jira instance
+    required: true
+  jira_pat:
+    description: Personal Access Token for Jira authentication
+    required: true
+  jira_user:
+    description: Jira username for authentication
+    required: true
+  jira_project_key:
+    description: The project key in Jira where the issue will be created
+    required: true
+  jira_project_board_name:
+    description: The name of the Jira board
+    required: true
+  jira_issue_type:
+    description: The type of issue to create (e.g., Task, Bug, Story)
+    required: true
+  jira_assign_to_current_sprint:
+    description: Whether to assign the issue to the current sprint (true/false)
+    required: false
+    default: 'false'
+  jira_assign_to_current_release:
+    description: Whether to assign the issue to the current release (true/false)
+    required: false
+    default: 'false'
