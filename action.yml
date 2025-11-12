@@ -1,4 +1,4 @@
-name: Create Jira-SIT Issue
+name: Create Jira Issue
 description: A GitHub Action to create a Jira issue and optionally assign it to the current sprint and release.
 author: left-code
 

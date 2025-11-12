@@ -1,38 +1,38 @@
-# Create Jira-SIT Issue
+# Create Jira Issue
 
 This GitHub Action creates a Jira issue and optionally assigns it to the current sprint and release. It uses the Jira REST API to interact with your Jira instance and supports various configuration options for issue creation.
 
 ## Inputs
 
-### `jira_url`
+### `url`
 
 **Required** The URL of your Jira instance (e.g., `https://your-company.atlassian.net`).
 
-### `jira_pat`
+### `pat`
 
 **Required** Personal Access Token for Jira authentication. Store this as a secret in your repository.
 
-### `jira_user`
+### `user`
 
 **Required** Jira username for authentication.
 
-### `jira_project_key`
+### `project_key`
 
 **Required** The project key in Jira where the issue will be created (e.g., `PROJ`).
 
-### `jira_project_board_name`
+### `project_board_name`
 
 **Required** The name of the Jira board associated with your project.
 
-### `jira_issue_type`
+### `issue_type`
 
 **Required** The type of issue to create (e.g., `Task`, `Bug`, `Story`, `External Request`).
 
-### `jira_assign_to_current_sprint`
+### `assign_to_current_sprint`
 
 **Optional** Whether to assign the issue to the current active sprint. Default: `false`.
 
-### `jira_assign_to_current_release`
+### `assign_to_current_release`
 
 **Optional** Whether to assign the issue to the current unreleased version. Default: `false`.
 
